@@ -35,7 +35,7 @@ namespace Server {
             console.log(query[key]);
 
         
-        
+        _response.write( "Query-Informationen, die eingegeben wurden: " + ( query[key] ) + "<br>" );
         
         _response.write("Ergebnis: " + (a + b));
 
