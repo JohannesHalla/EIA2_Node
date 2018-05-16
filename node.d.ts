@@ -22,6 +22,7 @@ interface Console {
     warn(message?: any, ...optionalParams: any[]): void;
 }
 
+
 interface Error {
     stack?: string;
 }

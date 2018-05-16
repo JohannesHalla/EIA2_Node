@@ -18,12 +18,12 @@ var Server;
         let query = Url.parse(_request.url, true).query;
         let a = parseInt(query["a"]);
         let b = parseInt(query["b"]);
-        for (let key in query)
-            console.log(query[key]);
         _response.setHeader("content-type", "text/html; charset=utf-8");
         _response.setHeader("Access-Control-Allow-Origin", "*");
         _response.write("Ich habe dich gehört<br/>");
-        _response.write("Das Ergebnis ist: " + (a + b));
+        for (var key in query)
+            console.log(query[key]);
+        _response.write("Ergebnis: " + (a + b));
         _response.end();
     }
 })(Server || (Server = {}));
