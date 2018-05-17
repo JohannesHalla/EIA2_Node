@@ -22,8 +22,8 @@ var Server;
         _response.setHeader("Access-Control-Allow-Origin", "*");
         _response.write("Ich habe dich gehört<br/>");
         for (var key in query)
-            console.log(query[key]);
-        _response.write("Query-Infos: " + (query[key]) + "<br>");
+            //    console.log(query[key]);
+            _response.write("Query-Infos: " + (query[key]) + "<br>");
         _response.write("Ergebnis: " + (a + b));
         _response.end();
     }
