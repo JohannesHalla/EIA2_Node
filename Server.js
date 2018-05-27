@@ -26,11 +26,9 @@ var L04_Interfaces;
                 case "refresh":
                     refresh(_response);
                     break;
-                case "search":
+                case "refresh2":
                     search(query, _response);
                     break;
-                default:
-                    error();
             }
         }
         _response.end();
@@ -59,7 +57,7 @@ var L04_Interfaces;
         for (let matrikel in studiHomoAssoc) {
             let studi = studiHomoAssoc[matrikel];
             let line = matrikel + ": ";
-            line += studi.studiengang + ", " + studi.name + ", " + studi.firstname + ", " + studi.age + " Jahre ";
+            line += studi.studiengang + ", " + studi.name + ", " + studi.firstname + ", " + studi.age + " years ";
             line += studi.gender ? "(M)" : "(F)";
             _response.write(line + "\n");
         }
@@ -68,16 +66,13 @@ var L04_Interfaces;
         let studi = studiHomoAssoc[query["searchFor"]];
         if (studi) {
             let line = query["searchFor"] + ": ";
-            line += studi.studiengang + ", " + studi.name + ", " + studi.firstname + ", " + studi.age + " Jahre ";
+            line += studi.firstname + "/ " + studi.name + "/ " + studi.age + " years " + "/ " + studi.studiengang;
             line += studi.gender ? "(M)" : "(F)";
             _response.write(line);
         }
         else {
-            _response.write("No Match");
+            _response.write("No student found.");
         }
-    }
-    function error() {
-        alert("Error");
     }
 })(L04_Interfaces || (L04_Interfaces = {}));
 //# sourceMappingURL=Server.js.map

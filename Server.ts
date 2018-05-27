@@ -49,12 +49,10 @@ namespace L04_Interfaces {
                     refresh(_response);
                     break;
                     
-                case "search":
+                case "refresh2":
                     search(query, _response);
                     break;
-               
-                default: 
-                    error();
+
             } 
         }
         _response.end();    
@@ -86,7 +84,7 @@ namespace L04_Interfaces {
             for (let matrikel in studiHomoAssoc) {  
             let studi: Studi = studiHomoAssoc[matrikel];
             let line: string = matrikel + ": ";
-            line += studi.studiengang + ", " + studi.name + ", " + studi.firstname + ", " + studi.age + " Jahre ";
+            line += studi.studiengang + ", " + studi.name + ", " + studi.firstname + ", " + studi.age + " years ";
             line += studi.gender ? "(M)" : "(F)"; 
             _response.write(line + "\n");                                          
             }
@@ -96,18 +94,13 @@ namespace L04_Interfaces {
             let studi: Studi = studiHomoAssoc[query["searchFor"]];
             if (studi) {
                 let line: string = query["searchFor"] + ": ";
-                line += studi.studiengang + ", " + studi.name + ", " + studi.firstname + ", " + studi.age + " Jahre ";
+                line += studi.firstname + "/ " + studi.name + "/ " + studi.age + " years " + "/ " + studi.studiengang;
                 line += studi.gender ? "(M)" : "(F)";
                 _response.write(line);
             } else {
-                _response.write("No Match");    
+                _response.write("No student found.");    
             }    
         }
-        
-        function error(): void {
-            alert("Error"); 
-        }
-
         
     
 }
