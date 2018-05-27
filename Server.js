@@ -27,7 +27,7 @@ var L04_Interfaces;
                     refresh(_response);
                     break;
                 case "refresh2":
-                    search(query, _response);
+                    refresh2(query, _response);
                     break;
             }
         }
@@ -62,7 +62,7 @@ var L04_Interfaces;
             _response.write(line + "\n");
         }
     }
-    function search(query, _response) {
+    function refresh2(query, _response) {
         let studi = studiHomoAssoc[query["searchFor"]];
         if (studi) {
             let line = query["searchFor"] + ": ";

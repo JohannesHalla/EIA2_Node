@@ -50,7 +50,7 @@ namespace L04_Interfaces {
                     break;
                     
                 case "refresh2":
-                    search(query, _response);
+                    refresh2(query, _response);
                     break;
 
             } 
@@ -90,7 +90,7 @@ namespace L04_Interfaces {
             }
         } 
         
-        function search(query: AssocStringString, _response: Http.ServerResponse): void {
+        function refresh2(query: AssocStringString, _response: Http.ServerResponse): void {
             let studi: Studi = studiHomoAssoc[query["searchFor"]];
             if (studi) {
                 let line: string = query["searchFor"] + ": ";
