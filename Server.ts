@@ -1,106 +1,85 @@
 import * as Http from "http";
 import * as Url from "url";
+import * as Database from "./Database";
 
-namespace L04_Interfaces {
+let port: number = process.env.PORT;
+if (port == undefined)
+    port = 8200;
 
-    interface AssocStringString {
-        [key: string]: string;
+let server: Http.Server = Http.createServer();
+server.addListener("request", handleRequest);
+server.listen(port);
+
+
+function respond(_response: Http.ServerResponse, _text: string): void {
+    _response.setHeader("content-type", "text/html; charset=utf-8");
+    _response.setHeader("Access-Control-Allow-Origin", "*");
+    _response.write(_text);
+    _response.end();
+}
+
+
+
+function handleRequest(_request: Http.IncomingMessage, _response: Http.ServerResponse): void {
+    console.log("Ich höre Stimmen!");
+    let query: AssocStringString = Url.parse(_request.url, true).query;
+    console.log(query["command"]);
+    if (query["command"]) {
+        switch (query["command"]) {
+
+            case "insert":
+                insert(query, _response);
+                break;
+
+
+            case "refresh":
+                refresh(_response);
+                break;
+
+            case "search":
+                search(query, _response);
+                break;
+
+            default:
+                error();
+        }
     }
+}
 
-    interface Studi {
-        name: string;
-        firstname: string;
-        matrikel: number;
-        age: number;
-        gender: boolean;
-        studiengang: string;
-    }
+function insert(query: AssocStringString, _response: Http.ServerResponse): void {
+    let obj: Studi = JSON.parse(query["data"]);
+    let _name: string = obj.name;
+    let _firstname: string = obj.firstname;
+    let matrikel: string = obj.matrikel.toString();
+    let _age: number = obj.age;
+    let _gender: boolean = obj.gender;
+    let _studiengang: string = obj.studiengang;
+    let studi: Studi;
+    studi = {
+        name: _name,
+        firstname: _firstname,
+        matrikel: parseInt(matrikel),
+        age: _age,
+        gender: _gender,
+        studiengang: _studiengang
+    };
+    Database.insert(studi);
+    respond(_response, "Data received!");
+}
 
- // Daten Matrikelnummer
-    interface Studis {
-        [matrikel: string]: Studi;
-    }
-    
-
-    // Person wird unter Matrikelnummer gespeichert
-    let studiHomoAssoc: Studis = {};
-    let port: number = process.env.PORT;
-    if (port == undefined)
-        port = 8200;
-
-    let server: Http.Server = Http.createServer((_request: Http.IncomingMessage, _response: Http.ServerResponse) => {
-        _response.setHeader("content-type", "text/html; charset=utf-8");
-        _response.setHeader("Access-Control-Allow-Origin", "*");
+function refresh(_response: Http.ServerResponse): void {
+    Database.findAll(function(json: string): void {
+        respond(_response, json);
     });
-    server.addListener("request", handleRequest);
-    server.listen(port);
+}
 
-    function handleRequest(_request: Http.IncomingMessage, _response: Http.ServerResponse): void {
-        console.log("Ich höre Stimmen!");
-        let query: AssocStringString = Url.parse(_request.url, true).query;
-        console.log(query["command"]);
-        if (query["command"] ) {
-            switch (query["command"] ) {
-                case "insert": 
-                    insert(query, _response);
-                    break;
-                 
-                case "refresh":
-                    refresh(_response);
-                    break;
-                    
-                case "refresh2":
-                    refresh2(query, _response);
-                    break;
+function search(query: AssocStringString, _response: Http.ServerResponse): void {
+    let searchMatrikel: number = parseInt(query["searchFor"]);
+    Database.findStudent(searchMatrikel, function(json: string): void {
+        respond(_response, json);
+    });
+}
 
-            } 
-        }
-        _response.end();    
-        
-    }      
-        
-        function insert(query: AssocStringString, _response: Http.ServerResponse): void {
-            let obj: Studi = JSON.parse(query["data"]);
-            let _name: string = obj.name;
-            let _firstname: string = obj.firstname;  
-            let matrikel: string = obj.matrikel.toString(); 
-            let _age: number = obj.age;
-            let _gender: boolean = obj.gender;
-            let _studiengang: string = obj.studiengang;  
-            let studi: Studi;
-            studi = {
-                name: _name,
-                firstname: _firstname,
-                matrikel: parseInt(matrikel),
-                age: _age,
-                gender: _gender,
-                studiengang: _studiengang
-            };  
-            studiHomoAssoc[matrikel] = studi;
-            }
-
-        function refresh(_response: Http.ServerResponse): void {
-            console.log(studiHomoAssoc);
-            for (let matrikel in studiHomoAssoc) {  
-            let studi: Studi = studiHomoAssoc[matrikel];
-            let line: string = matrikel + ": ";
-            line += studi.studiengang + ", " + studi.name + ", " + studi.firstname + ", " + studi.age + " years ";
-            line += studi.gender ? "(M)" : "(F)"; 
-            _response.write(line + "\n");                                          
-            }
-        } 
-        
-        function refresh2(query: AssocStringString, _response: Http.ServerResponse): void {
-            let studi: Studi = studiHomoAssoc[query["searchFor"]];
-            if (studi) {
-                let line: string = query["searchFor"] + ": ";
-                line += studi.firstname + "/ " + studi.name + "/ " + studi.age + " years " + "/ " + studi.studiengang;
-                line += studi.gender ? "(M)" : "(F)";
-                _response.write(line);
-            } else {
-                _response.write("No student found.");    
-            }    
-        }
-        
-    
+function error(): void {
+    alert("Error");
 }
